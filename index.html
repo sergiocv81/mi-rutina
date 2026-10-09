@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi Rutina">
+<meta name="theme-color" content="#14282B">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mi Rutina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #14282B;
+    --panel: #1D3A3E;
+    --panel-2: #24474C;
+    --line: #33565B;
+    --text: #EDEFE7;
+    --muted: #96AEAF;
+    --amber: #E8A34C;
+    --amber-dim: #7A5A2C;
+    --coral: #E2704F;
+    --green: #7FB77E;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html{ scroll-behavior: smooth; }
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family:'Inter', sans-serif;
+    padding: 20px 16px 60px;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.45;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
+    margin: 4px 0 2px;
+  }
+  .subtitle{
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 22px;
+  }
+  h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size: 1.15rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .block-desc{
+    color: var(--muted);
+    font-size: 0.86rem;
+    margin: 0 0 14px;
+  }
+  .block-desc a{ color: var(--amber); text-decoration: underline; }
+  .block-desc a:hover{ color: var(--coral); }
+
+  /* ---- General stopwatch (hero) ---- */
+  .hero{
+    background: linear-gradient(155deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    margin-bottom: 26px;
+    text-align: center;
+  }
+  .hero-label{
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .hero-time{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 3.1rem;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-buttons{
+    display:flex;
+    gap: 10px;
+    justify-content:center;
+    margin-top: 14px;
+  }
+
+  button{
+    font-family:'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+  }
+  button:active{ transform: scale(0.96); }
+  .btn-primary{ background: var(--amber); color: #17282A; }
+  .btn-stop{ background: var(--coral); color: #2A1710; }
+  .btn-secondary{ background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn-secondary:hover{ border-color: var(--muted); }
+  button:disabled{ opacity: 0.4; cursor: default; }
+
+  /* ---- Section cards ---- */
+  section{ margin-bottom: 30px; }
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .timer-row{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .timer-display{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-display.ringing{ color: var(--coral); }
+  .timer-sub{ color: var(--muted); font-size: 0.82rem; margin-top:2px; }
+
+  /* ---- Circuit (bloque 2) ---- */
+  .round-controls{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .round-select label{ font-size: 0.85rem; color: var(--muted); margin-right: 8px; }
+  select{
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family:'Inter', sans-serif;
+    font-size: 0.9rem;
+  }
+  .round-status{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--amber);
+  }
+
+  .exercise{
+    display:flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .exercise-illus{
+    flex: 0 0 84px;
+    width: 84px;
+    height: 84px;
+    background: var(--panel-2);
+    border-radius: 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow: hidden;
+  }
+  .exercise-illus svg{ width: 68px; height: 68px; }
+  .exercise-body{ flex: 1; min-width: 0; }
+  .exercise-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  .exercise-detail{
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .exercise-controls{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .check-btn{
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .check-btn.done{
+    background: var(--green);
+    color: #16281A;
+    border-color: var(--green);
+  }
+  .mini-timer{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.15rem; }
+
+  .rest-block{
+    background: var(--panel-2);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 4px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .rest-label{ font-size: 0.88rem; color: var(--muted); }
+
+  .exercise-count-note{
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .exercise-count-note.full{ color: var(--coral); }
+  .exercise-item{ margin-bottom: 18px; }
+  .exercise-item:last-child{ margin-bottom: 0; }
+  .remove-btn{
+    background: transparent;
+    color: var(--coral);
+    border: 1px solid var(--amber-dim);
+    font-size: 0.82rem;
+    padding: 7px 12px;
+  }
+  .remove-btn:disabled{ color: var(--muted); border-color: var(--line); opacity: 0.5; }
+
+  .pool-item{
+    display:flex;
+    gap: 12px;
+    align-items:center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .pool-item:last-child{ border-bottom: none; }
+  .pool-illus{
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    background: var(--panel-2);
+    border-radius: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .pool-illus svg{ width: 46px; height: 46px; }
+  .pool-body{ flex:1; min-width:0; }
+  .pool-name{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.92rem; }
+  .pool-detail{ color: var(--muted); font-size: 0.8rem; }
+  .pool-group-label{
+    font-size: 0.78rem;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 14px 0 4px;
+  }
+  .pool-group-label:first-child{ margin-top: 0; }
+  .add-btn{
+    background: var(--amber);
+    color: #17282A;
+    font-size: 0.82rem;
+    padding: 7px 12px;
+    flex-shrink: 0;
+  }
+  .add-btn:disabled{ background: var(--panel-2); color: var(--muted); }
+  .pool-empty{ color: var(--muted); font-size: 0.86rem; text-align:center; padding: 10px 0; }
+
+  .flash{
+    animation: flash-anim 0.6s ease-in-out 3;
+  }
+  @keyframes flash-anim{
+    0%,100%{ background: var(--panel); }
+    50%{ background: var(--amber-dim); }
+  }
+
+  footer{
+    text-align:center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 20px;
+  }
+  .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+  }
+  #install_btn{
+    display:none;
+    flex-shrink:0;
+    font-size:0.82rem;
+    padding:8px 12px;
+    margin-top:6px;
+  }
+
+  /* ---- Modal ---- */
+  .modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 18, 20, 0.72);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .modal-overlay.open{ display: flex; }
+  .modal-box{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 420px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 18px 20px 20px;
+  }
+  .modal-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 12px;
+  }
+  .modal-header h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .modal-close{
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    font-size: 1rem;
+    padding: 4px 8px;
+  }
+  .session-highlight{
+    background: var(--panel-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .session-highlight .big-time{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+  .session-highlight .session-date{
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+  .history-list{ list-style: none; padding: 0; margin: 0; }
+  .history-list li{
+    display:flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+  }
+  .history-list li:last-child{ border-bottom: none; }
+  .history-right{ display:flex; align-items:center; gap: 10px; }
+  .history-del-btn{
+    background: transparent;
+    border: 1px solid var(--amber-dim);
+    color: var(--coral);
+    font-size: 0.76rem;
+    padding: 4px 9px;
+    border-radius: 7px;
+  }
+  .history-del-btn:hover{ border-color: var(--coral); }
+  .history-empty{ color: var(--muted); font-size: 0.88rem; text-align:center; padding: 12px 0; }
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="top-row">
+    <div>
+      <h1>Rutina de hoy</h1>
+      <p class="subtitle">Activación, circuito de fuerza y enfriamiento — con control de tiempo</p>
+    </div>
+    <button id="install_btn" class="btn-primary" type="button">📲 Instalar</button>
+  </div>
+
+  <!-- ===== GENERAL STOPWATCH ===== -->
+  <div class="hero" id="hero">
+    <div class="hero-label">Cronómetro general de la sesión</div>
+    <div class="hero-time" id="stopwatchDisplay">00:00</div>
+    <div class="hero-buttons">
+      <button class="btn-primary" id="swToggle">Iniciar</button>
+      <button class="btn-secondary" id="swReset">Reiniciar</button>
+    </div>
+    <div style="margin-top:10px;">
+      <button class="btn-secondary" id="openHistory" style="font-size:0.82rem; padding:7px 14px;">Ver historial de sesiones</button>
+    </div>
+  </div>
+
+  <!-- ===== RUTINAS GUARDADAS ===== -->
+  <section>
+    <h2>Rutinas guardadas</h2>
+    <p class="block-desc">Guarda distintas combinaciones de ejercicios del Bloque 2, o carga una ya guardada. Se edita solo con el cronómetro principal detenido.</p>
+    <div class="card">
+      <div class="round-controls" style="margin-bottom:10px;">
+        <div class="round-select">
+          <label for="routineSelect">Rutina</label>
+          <select id="routineSelect">
+            <option value="pierna">Pierna</option>
+            <option value="brazo">Brazo</option>
+            <option value="abdomen">Abdomen</option>
+            <option value="reinicio">Mi Reinicio</option>
+            <option value="mirutina" selected>Mi Rutina</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-primary" id="saveRoutineBtn">Guardar rutina</button>
+          <button class="btn-secondary" id="loadRoutineBtn">Cargar rutina</button>
+        </div>
+      </div>
+      <div class="timer-sub" id="routineStatus">“Mi Reinicio” siempre carga la combinación original del Bloque 2.</div>
+    </div>
+  </section>
+
+  <!-- ===== BLOQUE 1 ===== -->
+  <section>
+    <h2>Bloque 1 · Activación</h2>
+    <p class="block-desc">Bicicleta estática, ritmo suave, resistencia baja o media-baja — sube la temperatura del cuerpo y lubrica articulaciones.</p>
+    <div class="card" id="card-b1">
+      <div class="timer-row">
+        <div>
+          <div class="timer-display" id="disp-b1">05:00</div>
+          <div class="timer-sub">Bicicleta suave</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-primary" data-start="b1">Iniciar</button>
+          <button class="btn-secondary" data-reset="b1">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BLOQUE 2 ===== -->
+  <section>
+    <h2>Bloque 2 · Circuito de fuerza y movilidad</h2>
+    <p class="block-desc">2 o 3 vueltas completas, descansando 1 minuto entre cada una. <a href="#poolSection" id="moreExercisesLink">Más ejercicios aquí</a></p>
+
+    <div class="card">
+      <div class="round-controls">
+        <div class="round-select">
+          <label for="totalRounds">Vueltas totales</label>
+          <select id="totalRounds">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+        <div class="round-status" id="roundStatus">Vuelta 1 de 3</div>
+      </div>
+
+      <div class="exercise-count-note" id="exerciseCountNote">0/8 ejercicios en el circuito</div>
+
+      <div id="activeExercisesContainer"></div>
+
+      <div class="rest-block" id="restBlock" style="margin-top:18px;">
+        <div>
+          <div class="rest-label">Descanso entre vueltas</div>
+          <span class="mini-timer" id="disp-rest">1:00</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-primary" data-start="rest">Iniciar descanso</button>
+          <button class="btn-secondary" data-reset="rest">Reiniciar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; text-align:right;">
+        <button class="btn-secondary" id="nextRound">Siguiente vuelta →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BLOQUE 3 ===== -->
+  <section>
+    <h2>Bloque 3 · Enfriamiento</h2>
+    <p class="block-desc">Bicicleta estática, pedaleo regenerativo — cadencia constante, resistencia muy suave para bajar pulsaciones.</p>
+    <div class="card" id="card-b3">
+      <div class="timer-row">
+        <div>
+          <div class="timer-display" id="disp-b3">05:00</div>
+          <div class="timer-sub">Pedaleo regenerativo</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-primary" data-start="b3">Iniciar</button>
+          <button class="btn-secondary" data-reset="b3">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OTROS EJERCICIOS DISPONIBLES ===== -->
+  <section id="poolSection">
+    <h2>Otros ejercicios disponibles</h2>
+    <p class="block-desc">Agrégalos al circuito del Bloque 2 para ir variando la rutina (máximo 8 en total). Solo se puede editar con el cronómetro principal detenido.</p>
+    <div class="card">
+      <div id="poolExercisesContainer"></div>
+    </div>
+  </section>
+
+
+  <footer>Toca “Iniciar” en cada bloque cuando lo empieces — la alarma suena sola al llegar a cero.</footer>
+
+  <!-- ===== MODAL: resumen de sesión / historial ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox">
+      <div class="modal-header">
+        <h3 id="modalTitle">Sesión guardada</h3>
+        <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  // ---------- Audio alarm ----------
+  let audioCtx = null;
+  function beep(times){
+    times = times || 3;
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      let t = audioCtx.currentTime;
+      for(let i=0;i<times;i++){
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.3, t+0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t+0.28);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t+0.3);
+        t += 0.4;
+      }
+    }catch(e){ /* audio unavailable */ }
+  }
+
+  function fmt(totalSeconds){
+    const m = Math.floor(totalSeconds/60);
+    const s = totalSeconds % 60;
+    return m + ':' + String(s).padStart(2,'0');
+  }
+  function fmt2(totalSeconds){
+    const m = Math.floor(totalSeconds/60);
+    const s = totalSeconds % 60;
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  // ---------- General stopwatch (start/stop combined) + session log ----------
+  let swSeconds = 0, swRunning = false, swInterval = null;
+  const swDisplay = document.getElementById('stopwatchDisplay');
+  const swToggleBtn = document.getElementById('swToggle');
+  const swResetBtn = document.getElementById('swReset');
+
+  function formatDuration(totalSeconds){
+    const h = Math.floor(totalSeconds/3600);
+    const m = Math.floor((totalSeconds%3600)/60);
+    const s = totalSeconds%60;
+    if(h>0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    return fmt2(totalSeconds);
+  }
+  function formatDateEs(date){
+    try{ return date.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }); }
+    catch(e){ return date.toString(); }
+  }
+
+  async function loadSessions(){
+    try{
+      const res = await window.storage.get('sessions', false);
+      return (res && res.value) ? JSON.parse(res.value) : [];
+    }catch(e){ return []; }
+  }
+  async function saveSession(record){
+    try{
+      const list = await loadSessions();
+      list.unshift(record);
+      await window.storage.set('sessions', JSON.stringify(list), false);
+    }catch(e){ /* el almacenamiento no está disponible en este momento */ }
+  }
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  function openModal(){ modalOverlay.classList.add('open'); }
+  function closeModal(){ modalOverlay.classList.remove('open'); }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e)=>{ if(e.target === modalOverlay) closeModal(); });
+
+  async function deleteSession(dateStr){
+    try{
+      const list = await loadSessions();
+      const filtered = list.filter(r => r.date !== dateStr);
+      await window.storage.set('sessions', JSON.stringify(filtered), false);
+      return filtered;
+    }catch(e){ return null; }
+  }
+
+  function renderHistoryHtml(list){
+    if(!list.length) return '<p class="history-empty">Aún no hay sesiones guardadas.</p>';
+    const items = list.map(r =>
+      '<li><span>' + formatDateEs(new Date(r.date)) + '</span>' +
+      '<span class="history-right"><span>' + formatDuration(r.seconds) + '</span>' +
+      '<button class="history-del-btn" data-del-session="' + r.date + '" aria-label="Eliminar sesión">Remover</button></span></li>'
+    ).join('');
+    return '<ul class="history-list">' + items + '</ul>';
+  }
+  async function showSessionSavedModal(record){
+    document.getElementById('modalTitle').textContent = 'Sesión guardada';
+    const list = await loadSessions();
+    let html = '<div class="session-highlight">' +
+        '<div class="big-time">' + formatDuration(record.seconds) + '</div>' +
+        '<div class="session-date">' + formatDateEs(new Date(record.date)) + '</div>' +
+      '</div>';
+    html += '<div id="historyListContainer">' + renderHistoryHtml(list) + '</div>';
+    document.getElementById('modalBody').innerHTML = html;
+    openModal();
+  }
+  async function showHistoryModal(){
+    document.getElementById('modalTitle').textContent = 'Historial de sesiones';
+    const list = await loadSessions();
+    document.getElementById('modalBody').innerHTML = '<div id="historyListContainer">' + renderHistoryHtml(list) + '</div>';
+    openModal();
+  }
+  document.getElementById('openHistory').addEventListener('click', showHistoryModal);
+  document.addEventListener('click', (e)=>{
+    const delBtn = e.target.closest('[data-del-session]');
+    if(!delBtn) return;
+    const dateStr = delBtn.getAttribute('data-del-session');
+    deleteSession(dateStr).then(list=>{
+      if(list === null) return;
+      const container = document.getElementById('historyListContainer');
+      if(container) container.innerHTML = renderHistoryHtml(list);
+    });
+  });
+
+  function tickStopwatch(){
+    swSeconds++;
+    swDisplay.textContent = formatDuration(swSeconds);
+  }
+
+  async function stopStopwatch(){
+    swRunning = false;
+    clearInterval(swInterval);
+    swToggleBtn.textContent = 'Iniciar';
+    swToggleBtn.classList.remove('btn-stop');
+    swToggleBtn.classList.add('btn-primary');
+    updateEditability();
+    if(swSeconds > 0){
+      const record = { date: new Date().toISOString(), seconds: swSeconds };
+      await saveSession(record);
+      await showSessionSavedModal(record);
+    }
+    swSeconds = 0;
+    swDisplay.textContent = formatDuration(swSeconds);
+  }
+  function startStopwatch(){
+    swRunning = true;
+    swToggleBtn.textContent = 'Detener';
+    swToggleBtn.classList.remove('btn-primary');
+    swToggleBtn.classList.add('btn-stop');
+    swInterval = setInterval(tickStopwatch, 1000);
+    updateEditability();
+  }
+  swToggleBtn.addEventListener('click', ()=>{
+    if(!swRunning){ startStopwatch(); } else { stopStopwatch(); }
+  });
+  swResetBtn.addEventListener('click', ()=>{
+    swSeconds = 0;
+    swDisplay.textContent = formatDuration(swSeconds);
+    if(swRunning){
+      swRunning = false;
+      clearInterval(swInterval);
+      swToggleBtn.textContent = 'Iniciar';
+      swToggleBtn.classList.remove('btn-stop');
+      swToggleBtn.classList.add('btn-primary');
+      updateEditability();
+    }
+  });
+
+  // ---------- Countdown timers (bloque1, bloque2 plank/rest, bloque3) ----------
+  const timers = {
+    b1:    { total: 300, remaining: 300, interval: null, running: false },
+    b3:    { total: 300, remaining: 300, interval: null, running: false },
+    plank: { total: 20,  remaining: 20,  interval: null, running: false },
+    rest:  { total: 60,  remaining: 60,  interval: null, running: false },
+    shadow:{ total: 120, remaining: 120, interval: null, running: false },
+  };
+
+  function renderTimer(key){
+    const t = timers[key];
+    const el = document.getElementById('disp-' + key);
+    if(el) el.textContent = fmt(t.remaining);
+  }
+  Object.keys(timers).forEach(renderTimer);
+
+  function startTimer(key){
+    const t = timers[key];
+    if(!t || t.running) return;
+    if(t.remaining <= 0) t.remaining = t.total;
+    t.running = true;
+    t.interval = setInterval(()=>{
+      t.remaining--;
+      renderTimer(key);
+      if(t.remaining <= 0){
+        clearInterval(t.interval);
+        t.running = false;
+        const el = document.getElementById('disp-' + key);
+        if(el) el.classList.add('ringing');
+        beep(4);
+        const card = document.getElementById('card-'+key);
+        if(card){ card.classList.add('flash'); setTimeout(()=>card.classList.remove('flash'), 1900); }
+        if(key === 'rest'){
+          document.getElementById('restBlock').classList.add('flash');
+          setTimeout(()=>document.getElementById('restBlock').classList.remove('flash'), 1900);
+        }
+      }
+    }, 1000);
+  }
+  function resetTimer(key){
+    const t = timers[key];
+    if(!t) return;
+    clearInterval(t.interval);
+    t.running = false;
+    t.remaining = t.total;
+    const el = document.getElementById('disp-' + key);
+    if(el) el.classList.remove('ringing');
+    renderTimer(key);
+  }
+
+  // ---------- Exercise catalog (Bloque 2) ----------
+  const CATALOG = [
+    { id:'squat', name:'Sentadillas con silla', detail:'10–12 repeticiones. Baja controlando hasta rozar el asiento y sube.', type:'reps', group:'Circuito original',
+      svg:'<circle cx="50" cy="27" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="35" x2="50" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="41" x2="34" y2="50" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="41" x2="66" y2="50" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="38" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="62" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="38" y1="72" x2="36" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="62" y1="72" x2="64" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="26" y="80" width="48" height="6" rx="2" fill="#4C7378"/>' },
+    { id:'wallpush', name:'Lagartijas apoyado en la pared', detail:'10–12 repeticiones. Manos a la altura del pecho, cuerpo recto en plancha inclinada, bajando de forma controlada.', type:'reps', group:'Circuito original',
+      svg:'<circle cx="20" cy="52" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="26" y1="55" x2="74" y2="60" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="34" y1="56" x2="30" y2="76" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="59" x2="56" y2="76" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="74" y1="60" x2="80" y2="78" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="74" y1="60" x2="66" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="10" y="78" width="30" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'plank', name:'Plancha modificada', detail:'Rodillas apoyadas o antebrazos sobre superficie elevada.', type:'timed', timerKey:'plank', durationOptions:[20,30,60,90,120], group:'Circuito original',
+      svg:'<circle cx="22" cy="55" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="28" y1="58" x2="72" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="58" x2="30" y2="76" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="72" y1="66" x2="78" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="72" y1="66" x2="60" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="10" y="78" width="30" height="5" rx="2" fill="#4C7378"/>' },
+    { id:'heel', name:'Elevación de talones', detail:'15 repeticiones a ritmo constante, subiendo sobre las puntas de los pies.', type:'reps', group:'Circuito original',
+      svg:'<circle cx="50" cy="18" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="26" x2="50" y2="55" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="32" x2="36" y2="42" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="32" x2="64" y2="42" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="55" x2="43" y2="76" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="55" x2="57" y2="76" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="43" y1="76" x2="46" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="57" y1="76" x2="54" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="30" y="82" width="40" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'abchair', name:'Abdominales en silla', detail:'10 repeticiones. Sube las rodillas al pecho sin balancear el torso.', type:'reps', group:'Circuito original',
+      svg:'<circle cx="34" cy="35" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="38" y1="40" x2="50" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="50" y2="78" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="66" y2="48" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="66" y1="48" x2="70" y2="60" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="42" y="76" width="18" height="8" rx="2" fill="#4C7378"/>' },
+    { id:'box', name:'Sombra de box básica', detail:'Combina golpes básicos (jab, cross, gancho) en el aire, a tu propio ritmo.', type:'timed', timerKey:'shadow', durationOptions:[1,2,3,4,5], durationUnit:'min', defaultIndex:1, group:'Circuito original',
+      svg:'<circle cx="46" cy="18" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="46" y1="26" x2="46" y2="56" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="52" x2="36" y2="78" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="52" x2="56" y2="78" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="34" x2="30" y2="40" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="34" x2="72" y2="30" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="29" r="4" fill="#E8A34C"/><rect x="26" y="80" width="40" height="4" rx="2" fill="#4C7378"/>' },
+
+    { id:'arm-curl', name:'Curl de bíceps', detail:'12–15 repeticiones. De pie o sentado, codos pegados al cuerpo, sube y baja controlando el movimiento.', type:'reps', group:'Pesas ligeras (tren superior)',
+      svg:'<circle cx="50" cy="18" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="26" x2="50" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="40" y2="84" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="60" y2="84" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="34" x2="64" y2="42" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="64" y1="42" x2="58" y2="28" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="57" cy="26" r="4" fill="#E8A34C"/><line x1="50" y1="34" x2="36" y2="46" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="35" cy="48" r="4" fill="#E8A34C"/><rect x="30" y="86" width="40" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'arm-press', name:'Press de hombros sentado', detail:'10–12 repeticiones. Espalda apoyada o erguida, empuja las pesas suavemente hacia arriba desde la altura de las orejas.', type:'reps', group:'Pesas ligeras (tren superior)',
+      svg:'<circle cx="50" cy="22" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="30" x2="50" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="40" y2="74" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="58" x2="60" y2="74" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="36" x2="36" y2="16" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="34" cy="13" r="4" fill="#E8A34C"/><line x1="50" y1="36" x2="64" y2="16" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="66" cy="13" r="4" fill="#E8A34C"/><rect x="26" y="72" width="48" height="10" rx="2" fill="#4C7378"/>' },
+    { id:'arm-lateral', name:'Elevaciones laterales', detail:'10–12 repeticiones. Codos ligeramente flexionados, sube los brazos hasta la altura de los hombros sin balancear el torso.', type:'reps', group:'Pesas ligeras (tren superior)',
+      svg:'<circle cx="50" cy="20" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="28" x2="50" y2="60" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="62" x2="40" y2="86" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="62" x2="60" y2="86" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="36" x2="24" y2="34" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="21" cy="34" r="4" fill="#E8A34C"/><line x1="50" y1="36" x2="76" y2="34" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="79" cy="34" r="4" fill="#E8A34C"/><rect x="30" y="88" width="40" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'arm-tricep', name:'Patada de tríceps', detail:'12 repeticiones. Torso ligeramente inclinado al frente y espalda recta, extiende el antebrazo hacia atrás apretando la parte posterior del brazo.', type:'reps', group:'Pesas ligeras (tren superior)',
+      svg:'<circle cx="26" cy="40" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="31" y1="44" x2="52" y2="56" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="56" x2="46" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="56" x2="62" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="38" y1="50" x2="30" y2="60" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="60" x2="58" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="61" cy="66" r="4" fill="#E8A34C"/><rect x="16" y="82" width="30" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'arm-row', name:'Remo inclinado', detail:'12 repeticiones. Torso inclinado al frente, lleva las pesas hacia las costillas juntando los omóplatos atrás.', type:'reps', group:'Pesas ligeras (tren superior)',
+      svg:'<circle cx="24" cy="38" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="29" y1="42" x2="54" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="54" y1="58" x2="48" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="54" y1="58" x2="64" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="38" y1="48" x2="24" y2="62" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="64" r="4" fill="#E8A34C"/><line x1="42" y1="52" x2="46" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><circle cx="47" cy="68" r="4" fill="#E8A34C"/><rect x="16" y="84" width="30" height="4" rx="2" fill="#4C7378"/>' },
+
+    { id:'abs-deadbug', name:'Bicho muerto (Deadbug)', detail:'8–10 repeticiones por lado. Acostado boca arriba con rodillas a 90°, baja despacio un brazo y la pierna contraria manteniendo la zona lumbar pegada a la superficie.', type:'reps', group:'Abdomen sencillo',
+      svg:'<circle cx="18" cy="60" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="25" y1="62" x2="52" y2="62" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="56" x2="14" y2="42" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="58" x2="46" y2="80" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="62" x2="66" y2="44" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="66" y1="44" x2="78" y2="52" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="62" x2="66" y2="60" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="8" y="80" width="20" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'abs-kneetouch', name:'Elevación de rodilla de pie con toque', detail:'12 repeticiones por lado. De pie, eleva la rodilla de forma controlada hacia el pecho apretando el abdomen como si hicieras un crunch vertical.', type:'reps', group:'Abdomen sencillo',
+      svg:'<circle cx="46" cy="18" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="46" y1="26" x2="46" y2="52" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="52" x2="34" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="34" x2="60" y2="44" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="44" x2="58" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="46" y1="34" x2="58" y2="52" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="24" y="74" width="20" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'abs-heeltouch', name:'Toques de talón acostado', detail:'10–12 repeticiones por lado. Boca arriba con rodillas flexionadas, desliza el torso ligeramente hacia los lados para tocar cada talón con la mano.', type:'reps', group:'Abdomen sencillo',
+      svg:'<circle cx="30" cy="30" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="34" y1="35" x2="52" y2="50" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="50" x2="52" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="66" x2="70" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="38" y1="42" x2="66" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="50" x2="34" y2="62" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="34" y1="62" x2="40" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="18" y="74" width="60" height="4" rx="2" fill="#4C7378"/>' },
+
+    { id:'leg-bridge', name:'Puente de glúteos', detail:'10–12 repeticiones. Boca arriba con rodillas dobladas y pies planos, eleva la cadera apretando glúteos arriba durante 2 segundos antes de bajar.', type:'reps', group:'Pierna sencilla',
+      svg:'<circle cx="20" cy="62" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="27" y1="64" x2="54" y2="52" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="54" y1="52" x2="66" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="66" y1="66" x2="66" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="20" y1="62" x2="10" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="4" y="82" width="70" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'leg-kickback', name:'Patada de glúteo en 4 puntos', detail:'12 repeticiones por pierna. Lleva la pierna hacia atrás de forma controlada sintiendo el glúteo sin arquear la espalda baja.', type:'reps', group:'Pierna sencilla',
+      svg:'<circle cx="24" cy="42" r="7" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="28" y1="46" x2="52" y2="56" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="48" x2="26" y2="72" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="44" y1="52" x2="44" y2="74" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="52" y1="56" x2="72" y2="50" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="72" y1="50" x2="86" y2="58" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="16" y="74" width="34" height="4" rx="2" fill="#4C7378"/>' },
+    { id:'leg-lateral', name:'Pasos laterales en semiflexión', detail:'10 pasos a la derecha y 10 a la izquierda. Rodillas ligeramente dobladas y espalda recta, da pasos laterales controlados para activar glúteo medio y cadera.', type:'reps', group:'Pierna sencilla',
+      svg:'<circle cx="50" cy="20" r="8" fill="none" stroke="#E8A34C" stroke-width="4"/><line x1="50" y1="28" x2="50" y2="52" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="34" x2="34" y2="44" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="34" x2="66" y2="44" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="52" x2="30" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="52" x2="70" y2="66" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="66" x2="24" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><line x1="70" y1="66" x2="76" y2="82" stroke="#E8A34C" stroke-width="4" stroke-linecap="round"/><rect x="16" y="84" width="68" height="4" rx="2" fill="#4C7378"/>' },
+  ];
+  const MAX_ACTIVE = 8;
+  const DEFAULT_ACTIVE_IDS = ['squat','wallpush','plank','heel','abchair','box'];
+  let activeIds = DEFAULT_ACTIVE_IDS.slice();
+  function catalogItem(id){ return CATALOG.find(c => c.id === id); }
+
+  function illusSvg(ex, sizeClass){
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' + ex.svg + '</svg>';
+  }
+  function timedControlsHtml(ex){
+    const unit = ex.durationUnit === 'min' ? 'min' : 's';
+    const mult = ex.durationUnit === 'min' ? 60 : 1;
+    const defIdx = ex.defaultIndex || 0;
+    const opts = ex.durationOptions.map((v,i) =>
+      '<option value="' + v + '"' + (i===defIdx ? ' selected' : '') + '>' + v + ' ' + unit + '</option>'
+    ).join('');
+    const defaultSeconds = ex.durationOptions[defIdx] * mult;
+    return '<span class="mini-timer" id="disp-' + ex.timerKey + '">' + fmt(defaultSeconds) + '</span>' +
+      '<select id="' + ex.timerKey + 'Duration">' + opts + '</select>' +
+      '<button class="btn-primary" data-start="' + ex.timerKey + '">Iniciar</button>' +
+      '<button class="btn-secondary" data-reset="' + ex.timerKey + '">Reiniciar</button>';
+  }
+  function activeExerciseHtml(ex){
+    const controls = ex.type === 'timed'
+      ? timedControlsHtml(ex)
+      : '<button class="check-btn" data-check="' + ex.id + '">Listo</button>';
+    return '<div class="exercise exercise-item">' +
+        '<div class="exercise-illus">' + illusSvg(ex) + '</div>' +
+        '<div class="exercise-body">' +
+          '<div class="exercise-name">' + ex.name + '</div>' +
+          '<div class="exercise-detail">' + ex.detail + '</div>' +
+          '<div class="exercise-controls">' + controls +
+            '<button class="remove-btn" data-remove="' + ex.id + '">Remover</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+  function poolItemHtml(ex){
+    return '<div class="pool-item">' +
+        '<div class="pool-illus">' + illusSvg(ex) + '</div>' +
+        '<div class="pool-body">' +
+          '<div class="pool-name">' + ex.name + '</div>' +
+          '<div class="pool-detail">' + ex.detail + '</div>' +
+        '</div>' +
+        '<button class="add-btn" data-add="' + ex.id + '">Agregar</button>' +
+      '</div>';
+  }
+
+  function renderActiveExercises(){
+    const container = document.getElementById('activeExercisesContainer');
+    container.innerHTML = activeIds.map(id => activeExerciseHtml(catalogItem(id))).join('');
+    // re-sync duration selects/timer displays for any timed exercises just re-rendered
+    activeIds.forEach(id=>{
+      const ex = catalogItem(id);
+      if(ex && ex.type === 'timed'){
+        const mult = ex.durationUnit === 'min' ? 60 : 1;
+        const sel = document.getElementById(ex.timerKey + 'Duration');
+        if(sel) sel.value = String(timers[ex.timerKey].total / mult);
+        renderTimer(ex.timerKey);
+      }
+    });
+  }
+  function renderPoolExercises(){
+    const container = document.getElementById('poolExercisesContainer');
+    const poolItems = CATALOG.filter(c => !activeIds.includes(c.id));
+    if(!poolItems.length){
+      container.innerHTML = '<p class="pool-empty">Todos los ejercicios disponibles ya están en el circuito.</p>';
+      return;
+    }
+    let html = '';
+    let lastGroup = null;
+    poolItems.forEach(ex=>{
+      if(ex.group !== lastGroup){ html += '<div class="pool-group-label">' + ex.group + '</div>'; lastGroup = ex.group; }
+      html += poolItemHtml(ex);
+    });
+    container.innerHTML = html;
+  }
+  function updateExerciseCountNote(){
+    const note = document.getElementById('exerciseCountNote');
+    note.textContent = activeIds.length + '/' + MAX_ACTIVE + ' ejercicios en el circuito';
+    note.classList.toggle('full', activeIds.length >= MAX_ACTIVE);
+  }
+  function afterExerciseListChanged(){
+    renderActiveExercises();
+    renderPoolExercises();
+    updateExerciseCountNote();
+    updateEditability();
+  }
+  function removeExercise(id){
+    if(swRunning) return;
+    if(id === 'plank') resetTimer('plank');
+    activeIds = activeIds.filter(x => x !== id);
+    afterExerciseListChanged();
+  }
+  function addExercise(id){
+    if(swRunning || activeIds.length >= MAX_ACTIVE || activeIds.includes(id)) return;
+    activeIds.push(id);
+    afterExerciseListChanged();
+  }
+
+  // ---------- Lock editing while the main stopwatch is running ----------
+  function updateEditability(){
+    document.querySelectorAll('[data-remove]').forEach(btn => { btn.disabled = swRunning; });
+    document.querySelectorAll('[data-add]').forEach(btn => { btn.disabled = swRunning || activeIds.length >= MAX_ACTIVE; });
+    const routineSelect = document.getElementById('routineSelect');
+    const saveBtn = document.getElementById('saveRoutineBtn');
+    const loadBtn = document.getElementById('loadRoutineBtn');
+    if(routineSelect) routineSelect.disabled = swRunning;
+    if(saveBtn) saveBtn.disabled = swRunning;
+    if(loadBtn) loadBtn.disabled = swRunning;
+  }
+
+  // ---------- Delegated events (works for dynamically rendered controls too) ----------
+  document.addEventListener('click', (e)=>{
+    const rm = e.target.closest('[data-remove]');
+    if(rm){ if(!rm.disabled) removeExercise(rm.getAttribute('data-remove')); return; }
+    const add = e.target.closest('[data-add]');
+    if(add){ if(!add.disabled) addExercise(add.getAttribute('data-add')); return; }
+    const chk = e.target.closest('[data-check]');
+    if(chk){
+      chk.classList.toggle('done');
+      chk.textContent = chk.classList.contains('done') ? 'Hecho ✓' : 'Listo';
+      return;
+    }
+    const start = e.target.closest('[data-start]');
+    if(start){ startTimer(start.getAttribute('data-start')); return; }
+    const reset = e.target.closest('[data-reset]');
+    if(reset){ resetTimer(reset.getAttribute('data-reset')); return; }
+  });
+  document.addEventListener('change', (e)=>{
+    if(e.target.tagName === 'SELECT' && e.target.id.endsWith('Duration')){
+      const key = e.target.id.slice(0, -'Duration'.length);
+      const t = timers[key];
+      if(!t) return;
+      const ex = CATALOG.find(c => c.timerKey === key);
+      const mult = (ex && ex.durationUnit === 'min') ? 60 : 1;
+      const seconds = parseInt(e.target.value, 10) * mult;
+      t.total = seconds;
+      if(!t.running){
+        t.remaining = seconds;
+        const el = document.getElementById('disp-' + key);
+        if(el) el.classList.remove('ringing');
+        renderTimer(key);
+      }
+    }
+  });
+
+  // ---------- Rutinas guardadas ----------
+  const ROUTINE_LABELS = { pierna:'Pierna', brazo:'Brazo', abdomen:'Abdomen', mirutina:'Mi Rutina', reinicio:'Mi Reinicio' };
+  function setRoutineStatus(msg){ document.getElementById('routineStatus').textContent = msg; }
+  async function saveRoutine(){
+    const slot = document.getElementById('routineSelect').value;
+    if(slot === 'reinicio'){
+      setRoutineStatus('“Mi Reinicio” es la combinación original del Bloque 2 y no se puede sobrescribir.');
+      return;
+    }
+    try{
+      await window.storage.set('routine:' + slot, JSON.stringify(activeIds), false);
+      setRoutineStatus('Rutina guardada en “' + ROUTINE_LABELS[slot] + '”.');
+    }catch(e){
+      setRoutineStatus('No se pudo guardar la rutina en este momento.');
+    }
+  }
+  async function loadRoutine(){
+    const slot = document.getElementById('routineSelect').value;
+    if(slot === 'reinicio'){
+      activeIds = DEFAULT_ACTIVE_IDS.slice();
+      afterExerciseListChanged();
+      setRoutineStatus('Se cargó la combinación original del Bloque 2 (Mi Reinicio).');
+      return;
+    }
+    try{
+      const res = await window.storage.get('routine:' + slot, false);
+      if(res && res.value){
+        const ids = JSON.parse(res.value).filter(id => catalogItem(id));
+        activeIds = ids.length ? ids.slice(0, MAX_ACTIVE) : DEFAULT_ACTIVE_IDS.slice();
+        afterExerciseListChanged();
+        setRoutineStatus('Se cargó la rutina “' + ROUTINE_LABELS[slot] + '”.');
+      } else {
+        setRoutineStatus('Aún no hay una rutina guardada en “' + ROUTINE_LABELS[slot] + '”.');
+      }
+    }catch(e){
+      setRoutineStatus('No se pudo cargar la rutina en este momento.');
+    }
+  }
+  document.getElementById('saveRoutineBtn').addEventListener('click', saveRoutine);
+  document.getElementById('loadRoutineBtn').addEventListener('click', loadRoutine);
+
+  // ---------- Round tracking (bloque 2) ----------
+  let currentRound = 1;
+  const totalRoundsSelect = document.getElementById('totalRounds');
+  const roundStatus = document.getElementById('roundStatus');
+  function updateRoundStatus(){
+    roundStatus.textContent = 'Vuelta ' + currentRound + ' de ' + totalRoundsSelect.value;
+  }
+  totalRoundsSelect.addEventListener('change', updateRoundStatus);
+  document.getElementById('nextRound').addEventListener('click', ()=>{
+    const total = parseInt(totalRoundsSelect.value, 10);
+    if(currentRound < total){
+      currentRound++;
+      updateRoundStatus();
+      // reset the "listo" checks and plank timer for the new round
+      document.querySelectorAll('[data-check]').forEach(btn=>{
+        btn.classList.remove('done'); btn.textContent = 'Listo';
+      });
+      resetTimer('plank');
+      startTimer('rest');
+    } else {
+      roundStatus.textContent = 'Circuito completo ✓';
+    }
+  });
+  updateRoundStatus();
+
+  // ---------- Initial render ----------
+  renderActiveExercises();
+  renderPoolExercises();
+  updateExerciseCountNote();
+  updateEditability();
+})();
+
+/* ======================= INSTALACIÓN COMO APP (PWA) ======================= */
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const btn = document.getElementById('install_btn');
+  if (btn) btn.style.display = 'block';
+});
+
+async function instalarApp(){
+  if(!deferredInstallPrompt){
+    alert('Si no aparece la instalación, abre esta página desde Chrome o Safari usando una dirección HTTPS y después usa el menú → Agregar a pantalla de inicio.');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  const btn = document.getElementById('install_btn');
+  if (btn) btn.style.display = 'none';
+}
+
+document.getElementById('install_btn').addEventListener('click', instalarApp);
+
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('install_btn');
+  if (btn) btn.style.display = 'none';
+});
+
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service Worker:', err));
+  });
+}
+</script>
+
+</body>
+</html>
